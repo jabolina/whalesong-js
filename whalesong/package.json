@@ -1,8 +1,8 @@
 {
-  "name": "whatsapp-puppeter",
+  "name": "whalesong-js",
   "version": "0.0.1",
-  "description": "A WhatsAppWeb using Puppetter",
-  "main": "index.js",
+  "description": "Whalesong is a library to manage WebApps remotely. Currently WhatsappWeb is implemented",
+  "main": "./distribution/index.js",
   "scripts": {
     "start": "babel-node src/index.js",
     "node": "babel-node",
@@ -12,16 +12,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://jabolina1@bitbucket.org/neppo/whatsapp-gateway-puppeter.git"
+    "url": "git+https://github.com/jabolina/whalesong-js.git"
   },
   "author": "jabolina",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/neppo/whatsapp-gateway-puppeter#readme",
+  "homepage": "https://github.com/jabolina/whalesong-js.git#readme",
   "dependencies": {
     "@babel/polyfill": "7.0.0",
     "puppeteer": "1.11.0",
     "queue": "4.5.1",
-    "winston": "^3.1.0"
+    "winston": "3.1.0"
   },
   "devDependencies": {
     "@babel/cli": "7.1.5",
