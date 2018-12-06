@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config ./config/webpack.prod.js --mode production --output ../wrapper/whatsapp-output/whalesong.min.js",
+    "build": "webpack --config ./config/webpack.prod.js --mode production --output ../whalesong/whatsapp-output/whalesong.min.js",
     "beautify": "js-beautify ."
   },
   "author": "Alfred Santacatalina, jabolina",
@@ -27,6 +27,6 @@
     "babel-preset-env": "1.7.0",
     "js-beautify": "1.7.5",
     "webpack": "4.10.2",
-    "webpack-cli": "^3.0.1"
+    "webpack-cli": "3.0.1"
   }
 }
