@@ -1,0 +1,41 @@
+{
+  "name": "whatsapp-puppeter",
+  "version": "0.0.1",
+  "description": "A WhatsAppWeb using Puppetter",
+  "main": "index.js",
+  "scripts": {
+    "start": "babel-node src/index.js",
+    "node": "babel-node",
+    "build": "babel src --out-dir distribution",
+    "debug": "babel-node --inspect",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://jabolina1@bitbucket.org/neppo/whatsapp-gateway-puppeter.git"
+  },
+  "author": "jabolina",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/neppo/whatsapp-gateway-puppeter#readme",
+  "dependencies": {
+    "@babel/polyfill": "7.0.0",
+    "puppeteer": "1.11.0",
+    "queue": "4.5.1",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.1.5",
+    "@babel/core": "7.1.6",
+    "@babel/node": "7.0.0",
+    "@babel/plugin-proposal-class-properties": "7.1.0",
+    "@babel/plugin-proposal-json-strings": "7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "7.0.0",
+    "@babel/plugin-syntax-import-meta": "7.0.0",
+    "@babel/preset-env": "7.1.6",
+    "@babel/preset-stage-3": "7.0.0",
+    "eslint": "5.9.0",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-import": "2.14.0",
+    "nodemon": "1.18.6"
+  }
+}
