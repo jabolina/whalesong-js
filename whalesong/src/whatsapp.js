@@ -3,12 +3,15 @@ import puppeteer from "puppeteer";
 import fs from "fs";
 import winston from "winston";
 
+import ResultManager from "./manager/result";
+import { WHATSAPP_WEB_URL, DEFAULT_CHROMIUM_ARGS, SCRIPTLET_PATH } from "./constants";
+
 const logger = winston.createLogger({
     level: "info",
     format: winston.format.combine(
         winston.format.colorize(),
         winston.format.timestamp(),
-        winston.format.printf(info => `[${info.timestamp}] --- [${info.level}]: ${info.message}`),
+        winston.format.printf(info => `[${info.timestamp}] --- [${info.level}]: [PUPPETEER] ${info.message}`),
     ),
     transports: [
         new winston.transports.Console(),
@@ -18,9 +21,6 @@ const logger = winston.createLogger({
         }),
     ],
 });
-
-import ResultManager from "./manager/result";
-import { WHATSAPP_WEB_URL, DEFAULT_CHROMIUM_ARGS, SCRIPTLET_PATH } from "./constants";
 
 class WhatsAppInterface {
     constructor() {
@@ -72,7 +72,7 @@ export class WhatsAppDriver extends WhatsAppInterface {
         await this.page.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 "
         + "(KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36");
         await this.page.setViewport({ width: 800, height: 600 });
-        await this.page.on("console", ({ _text }) => logger.info(`[PUPPETEER]: ${_text}`));
+        await this.page.on("console", ({ _text }) => logger.info(`${_text}`));
         await this.page.exposeFunction("whalesongPushResult", (result) => {
             if (result) {
                 try {

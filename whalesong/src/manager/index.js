@@ -38,7 +38,10 @@ export class BaseManager {
 }
 
 export class BaseModelManager extends BaseManager {
-    MODEL_CLASS = JSON;
+    constructor(driver, name) {
+        super(driver, name);
+        this.MODEL_CLASS = {};
+    }
 
     getModel() {
         return Object.assign(this.MODEL_CLASS, this.executeCommand("getModel"));
@@ -51,7 +54,9 @@ export class BaseModelManager extends BaseManager {
     }
 
     executeCommand(command, args, resultType) {
-        return super.executeCommand(BaseModelManager.buildCommand(command, this.id), args, resultType);
+        return super.executeCommand(
+            BaseModelManager.buildCommand(command, this.id), args, resultType,
+        );
     }
 
     monitorModel() {
@@ -64,7 +69,10 @@ export class BaseModelManager extends BaseManager {
 }
 
 export class BaseCollectionManager extends BaseModelManager {
-    MODEL_MANAGER_CLASS = JSON;
+    constructor(driver, name) {
+        super(driver, name);
+        this.MODEL_MANAGER_CLASS = {};
+    }
 
     getLength() {
         return this.executeCommand("getLength");
@@ -75,7 +83,7 @@ export class BaseCollectionManager extends BaseModelManager {
     }
 
     async getItemById(id) {
-        let { result } = await this.executeCommand("getItemById", { id });
+        const { result } = await this.executeCommand("getItemById", { id });
         return Object.assign(this.MODEL_MANAGER_CLASS, result);
     }
 

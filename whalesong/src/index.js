@@ -4,6 +4,7 @@ import ConnectionManager from "./manager/connection";
 import StreamManager from "./manager/stream";
 import { ChatCollectionManager } from "./manager/chat";
 import { MessageCollectionManager } from "./manager/message";
+import StorageManager from "./manager/storage";
 
 
 class WhatsApp extends BaseManager {
@@ -14,6 +15,7 @@ class WhatsApp extends BaseManager {
         this.subManagers.set("stream", new StreamManager(this.getDriver(), "stream"));
         this.subManagers.set("chats", new ChatCollectionManager(this.getDriver(), "chats"));
         this.subManagers.set("messages", new MessageCollectionManager(this.getDriver(), "messages"));
+        this.subManagers.set("storage", new StorageManager(this.getDriver(), "storage"));
     }
 
     async build() {

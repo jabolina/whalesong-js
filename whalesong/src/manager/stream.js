@@ -1,30 +1,37 @@
-import {BaseManager, BaseModelManager} from "./index";
+import {BaseManager, BaseModelManager } from ".";
 
 class Stream extends BaseManager {
-    state = {
-        OPENING: "OPENING",
-        PAIRING: "PAIRING",
-        UNPAIRED: "UNPAIRED",
-        UNPAIRED_IDLE: "UNPAIRED_IDLE",
-        CONNECTED: "CONNECTED",
-        TIMEOUT: "TIMEOUT",
-        CONFLICT: "CONFLICT",
-        UNLAUNCHED: "UNLAUNCHED",
-        PROXYBLOCK: 'PROXYBLOCK',
-        TOS_BLOCK: "TOS_BLOCK",
-        SMB_TOS_BLOCK: "SMB_TOS_BLOCK"
-    };
+    constructor(driver, name) {
+        super(driver, name);
 
-    stream = {
-        DISCONNECTED: "DISCONNECTED",
-        SYNCING: "SYNCING",
-        RESUMING: "RESUMING",
-        CONNECTED: "CONNECTED",
-    };
+        this.state = {
+            OPENING: "OPENING",
+            PAIRING: "PAIRING",
+            UNPAIRED: "UNPAIRED",
+            UNPAIRED_IDLE: "UNPAIRED_IDLE",
+            CONNECTED: "CONNECTED",
+            TIMEOUT: "TIMEOUT",
+            CONFLICT: "CONFLICT",
+            UNLAUNCHED: "UNLAUNCHED",
+            PROXYBLOCK: "PROXYBLOCK",
+            TOS_BLOCK: "TOS_BLOCK",
+            SMB_TOS_BLOCK: "SMB_TOS_BLOCK",
+        };
+
+        this.stream = {
+            DISCONNECTED: "DISCONNECTED",
+            SYNCING: "SYNCING",
+            RESUMING: "RESUMING",
+            CONNECTED: "CONNECTED",
+        };
+    }
 }
 
 class StreamManager extends BaseModelManager {
-    MODEL_CLASS = new Stream(this.getDriver(), this.getName());
+    constructor(driver, name) {
+        super(driver, name);
+        this.MODEL_CLASS = new Stream(driver, name);
+    }
 
     poke() {
         return this.executeCommand("poke");

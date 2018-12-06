@@ -1,9 +1,12 @@
-import {BaseCollectionManager, BaseManager, BaseModelManager} from "./index";
+import { BaseCollectionManager, BaseManager, BaseModelManager } from "./index";
 
 class Chat extends BaseManager {}
 
 export class ChatManager extends BaseModelManager {
-    MODEL_CLASS = Chat;
+    constructor(driver, name) {
+        super(driver, name);
+        this.MODEL_CLASS = new Chat(driver, name);
+    }
 
     sendText(text, quotedMsgId = "", mentions = "", linkDesc = "") {
         const params = {
@@ -26,7 +29,10 @@ export class ChatManager extends BaseModelManager {
 }
 
 export class ChatCollectionManager extends BaseCollectionManager {
-    MODEL_MANAGER_CLASS = new ChatManager(this.getDriver(), "chats");
+    constructor(driver, name) {
+        super(driver, name);
+        this.MODEL_MANAGER_CLASS = new ChatManager(driver, name);
+    }
 
     getActive() {
         return this.executeCommand("getActive");

@@ -26,7 +26,10 @@ class Result extends EventEmitter {
         this.result = result;
     }
 
-    setErrorResult(exception) {}
+    setErrorResult(exception) {
+        this.emit("error", exception);
+        this.result = exception;
+    }
 
     getResult() {
         return this.result;
@@ -46,7 +49,7 @@ class BasePartialResult extends Result {
     }
 
     setErrorResult(exception) {
-        this.emit("error", data);
+        super.setErrorResult(exception);
         this.queue.push(exception);
     }
 
@@ -61,6 +64,7 @@ class BasePartialResult extends Result {
     }
 }
 
+// eslint-disable-next-line
 class MonitorResult extends BasePartialResult {
     async* next() {
         while (this.keepRunning) {
@@ -77,11 +81,13 @@ class MonitorResult extends BasePartialResult {
         }
     }
 
-    getResult = () => ((that) => ({
-        [Symbol.asyncIterator]() {
-            return that.next();
-        }
-    }))(this);
+    getResult() {
+        return () => (that => ({
+            [Symbol.asyncIterator]() {
+                return that.next();
+            },
+        }))(this);
+    }
 }
 
 class ResultManager {
@@ -99,6 +105,7 @@ class ResultManager {
         const name = Math.random().toString(36).substr(0, 10);
         const id = this.genNextId();
         const constructorInString = `new ${resultType}('${id}', '${name}', undefined);`;
+        // eslint-disable-next-line
         const result = eval(constructorInString);
         this.results.set(id, result);
 
