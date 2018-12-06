@@ -35,6 +35,7 @@ publish:
 	$(MAKE) whalesong-requirements
 	$(MAKE) whalesong-build
 	cp ./README.md whalesong/
+	cd whalesong && npm version patch
 	npm publish ./whalesong
 
 clean:
