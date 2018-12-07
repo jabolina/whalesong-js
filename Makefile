@@ -32,9 +32,10 @@ build:
 	$(MAKE) scriptlet-build
 
 publish:
-	$(MAKE) whalesong-requirements
-	$(MAKE) whalesong-build
+	$(MAKE) requirements
+	$(MAKE) build
 	cp ./README.md whalesong/
+	cp -r whalesong/whatsapp-output whalesong/distribution
 	cd whalesong && npm version patch
 	npm publish ./whalesong
 

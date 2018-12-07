@@ -29,7 +29,7 @@ class StorageManager extends BaseModelManager {
     }
 
     monitorItemStorage() {
-        return this.executeCommand("monitorItemStorage");
+        return this.executeCommand("monitorItemStorage", {}, "MonitorResult");
     }
 }
 

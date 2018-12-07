@@ -81,13 +81,11 @@ class MonitorResult extends BasePartialResult {
         }
     }
 
-    getResult() {
-        return () => (that => ({
-            [Symbol.asyncIterator]() {
-                return that.next();
-            },
-        }))(this);
-    }
+    getResult = () => ((that) => ({
+        [Symbol.asyncIterator]() {
+            return that.next();
+        }
+    }))(this);
 }
 
 class ResultManager {
