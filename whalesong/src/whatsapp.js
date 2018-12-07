@@ -4,7 +4,7 @@ import fs from "fs";
 import winston from "winston";
 
 import ResultManager from "./manager/result";
-import { WHATSAPP_WEB_URL, DEFAULT_CHROMIUM_ARGS, SCRIPTLET_PATH } from "./constants";
+import { WHATSAPP_WEB_URL, DEFAULT_CHROMIUM_ARGS, DEFAULT_DATA_DIR, SCRIPTLET_PATH } from "./constants";
 
 export const logger = winston.createLogger({
     level: "info",
@@ -46,10 +46,16 @@ class WhatsAppInterface {
 export class WhatsAppDriver extends WhatsAppInterface {
     constructor(headless, ...args) {
         super();
+        const extraArguments = Object.assign({}, ...args);
+
+        if (!("userDataDir" in extraArguments)) {
+            extraArguments.userDataDir = DEFAULT_DATA_DIR;
+        }
+
         this.puppetterOpt = {
             headless,
             args: DEFAULT_CHROMIUM_ARGS,
-            ...args,
+            ...extraArguments,
         };
         this.browser = undefined;
         this.page = undefined;
@@ -103,14 +109,12 @@ export class WhatsAppDriver extends WhatsAppInterface {
     }
 
     async evaluate(command) {
-        const evaluted = await this.page.evaluate(command);
-        return evaluted;
+        await this.page.evaluate(command);
     }
 
     executeCommand(command, params = {}, resultType = "Result") {
         const resultObject = this.resultManager.requestResult(resultType);
         const completeCommand = `(function() {{window.manager.executeCommand("${resultObject.getId()}", "${command}", ${JSON.stringify(params)})}})()`;
-        this.evaluate(completeCommand);
-        return resultObject;
+        return this.evaluate(completeCommand).then(() => resultObject);
     }
 }

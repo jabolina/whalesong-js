@@ -10,7 +10,7 @@ import StorageManager from "./manager/storage";
 // eslint-disable-next-line
 export class WhatsApp extends BaseManager {
     constructor(headless, ...args) {
-        super(new WhatsAppDriver(headless, args));
+        super(new WhatsAppDriver(headless, ...args));
 
         this.subManagers.set("conn", new ConnectionManager(this.getDriver(), "conn"));
         this.subManagers.set("stream", new StreamManager(this.getDriver(), "stream"));

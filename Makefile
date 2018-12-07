@@ -30,8 +30,6 @@ build:
 	@echo "Building ${PACKAGE_NAME}"
 	$(MAKE) scriptlet-build
 	$(MAKE) whalesong-build
-	cp -r whalesong/whatsapp-output whalesong/lib/
-	rm -f whalesong/lib/whatsapp-output/.gitignore
 
 publish:
 	$(MAKE) clean
