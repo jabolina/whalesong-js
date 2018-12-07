@@ -1,6 +1,6 @@
 import path from "path";
 
-export const SCRIPTLET_PATH = path.join(__dirname, "..", "whatsapp-output", "whalesong.js");
+export const SCRIPTLET_PATH = path.join(__dirname, "whatsapp-output", "whalesong.js");
 
 export const WHATSAPP_WEB_URL = "https://web.whatsapp.com";
 export const DEFAULT_CHROMIUM_ARGS = [

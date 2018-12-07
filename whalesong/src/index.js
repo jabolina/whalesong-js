@@ -7,7 +7,8 @@ import { MessageCollectionManager } from "./manager/message";
 import StorageManager from "./manager/storage";
 
 
-class WhatsApp extends BaseManager {
+// eslint-disable-next-line
+export class WhatsApp extends BaseManager {
     constructor(headless, ...args) {
         super(new WhatsAppDriver(headless, args));
 
@@ -41,5 +42,3 @@ class WhatsApp extends BaseManager {
         return data;
     }
 }
-
-export default WhatsApp;

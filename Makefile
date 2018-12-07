@@ -17,8 +17,8 @@ scriptlet-requirements:
 
 requirements:
 	@echo "Installing ${PACKAGE_NAME} requirements"
-	$(MAKE) whalesong-requirements
 	$(MAKE) scriptlet-requirements
+	$(MAKE) whalesong-requirements
 
 whalesong-build:
 	cd whalesong && npm run build
@@ -28,17 +28,19 @@ scriptlet-build:
 
 build:
 	@echo "Building ${PACKAGE_NAME}"
-	$(MAKE) whalesong-build
 	$(MAKE) scriptlet-build
+	$(MAKE) whalesong-build
+	cp -r whalesong/whatsapp-output whalesong/lib/
+	rm -f whalesong/lib/whatsapp-output/.gitignore
 
 publish:
+	$(MAKE) clean
 	$(MAKE) requirements
 	$(MAKE) build
 	cp ./README.md whalesong/
-	cp -r whalesong/whatsapp-output whalesong/distribution
 	cd whalesong && npm version patch
-	npm publish ./whalesong
+	npm publish ./whalesong/
 
 clean:
 	rm -f whalesong/whatsapp-output/*.js
-	rm -rf whalesong/distribution
+	rm -rf whalesong/lib

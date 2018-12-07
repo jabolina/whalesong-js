@@ -1,12 +1,12 @@
 {
   "name": "whalesong-js",
-  "version": "0.0.5",
+  "version": "0.0.12",
   "description": "Whalesong is a library to manage WebApps remotely. Currently WhatsappWeb is implemented",
-  "main": "./distribution/index.js",
+  "main": "./lib/index.js",
   "scripts": {
     "start": "babel-node src/index.js",
     "node": "babel-node",
-    "build": "babel src --out-dir distribution",
+    "build": "babel src --out-dir lib",
     "debug": "babel-node --inspect",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,7 +32,6 @@
     "@babel/plugin-syntax-dynamic-import": "7.0.0",
     "@babel/plugin-syntax-import-meta": "7.0.0",
     "@babel/preset-env": "7.1.6",
-    "@babel/preset-stage-3": "7.0.0",
     "eslint": "5.9.0",
     "eslint-config-airbnb-base": "13.1.0",
     "eslint-plugin-import": "2.14.0",

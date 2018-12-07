@@ -102,7 +102,7 @@ class ResultManager {
     requestResult(resultType) {
         const name = Math.random().toString(36).substr(0, 10);
         const id = this.genNextId();
-        const constructorInString = `new ${resultType}('${id}', '${name}', undefined);`;
+        const constructorInString = `new ${resultType}('${id}', '${name}', {});`;
         // eslint-disable-next-line
         const result = eval(constructorInString);
         this.results.set(id, result);

@@ -122,6 +122,7 @@ Thumbs.db
 # Ignore built ts files
 dist/**/*
 build/**/*
-distribution/
+lib/
+whalesong/test.js
 whalesong/README.md
-whalesong/example.js
+example.js
