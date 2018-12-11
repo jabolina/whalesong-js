@@ -12,6 +12,7 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
+        "no-await-in-loop": 0,
         "import/no-cycle": 0,
         "no-restricted-syntax": 0,
         "indent": [
