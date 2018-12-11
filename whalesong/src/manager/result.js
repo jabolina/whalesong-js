@@ -1,4 +1,8 @@
+import { fork } from "child_process";
+import path from "path";
 import EventEmitter from "events";
+
+import { MESSAGE_TYPES } from "./sub-process/constants";
 
 class Result extends EventEmitter {
     constructor(id, name, result) {
@@ -36,7 +40,7 @@ class Result extends EventEmitter {
     }
 }
 
-class BasePartialResult extends Result {
+export class BasePartialResult extends Result {
     constructor(id, name, result) {
         super(id, name, result);
         this.queue = [];
@@ -53,9 +57,9 @@ class BasePartialResult extends Result {
         this.queue.push(exception);
     }
 
-    setPartialResult(data) {
-        super.setPartialResult(data);
-        this.queue.push(data);
+    setPartialResult(partial) {
+        super.setPartialResult(partial);
+        this.queue.push(partial);
     }
 
     cancel() {
@@ -64,31 +68,59 @@ class BasePartialResult extends Result {
     }
 }
 
-// eslint-disable-next-line
-class MonitorResult extends BasePartialResult {
-    async* next() {
-        while (this.keepRunning) {
-            if (this.queue.length) {
-                const value = this.queue.shift();
+export class MonitorResult extends BasePartialResult {
+    constructor(id, name, result) {
+        super(id, name, result);
 
-                if (value instanceof Error) {
-                    yield { done: true };
-                    break;
-                }
+        this.worker = fork(path.join(__dirname, "sub-process", "result"), {
+            detatched: true,
+        });
 
-                yield { value, done: false };
-            }
-        }
+        this.sendToWorker({
+            messageType: MESSAGE_TYPES.CREATE,
+            params: {
+                id,
+                name,
+                result,
+            },
+        });
     }
 
-    getResult = () => ((that) => ({
-        [Symbol.asyncIterator]() {
-            return that.next();
+    async sendToWorker(envelope) {
+        this.worker.send(envelope);
+    }
+
+    getResult() {
+        this.sendToWorker({
+            messageType: MESSAGE_TYPES.RESULT,
+            params: {
+                content: "getResult",
+            },
+        });
+
+        return this.worker;
+    }
+
+    setPartialResult(partial) {
+        // super.setPartialResult(partial);
+        this.sendToWorker({
+            messageType: MESSAGE_TYPES.METHOD,
+            params: {
+                method: "setPartialResult",
+                content: partial,
+            },
+        });
+    }
+
+    cancel() {
+        super.cancel();
+        if (this.worker) {
+            this.worker.disconnect();
         }
-    }))(this);
+    }
 }
 
-class ResultManager {
+export class ResultManager {
     constructor() {
         this.id = 1;
         this.results = new Map();
@@ -110,17 +142,15 @@ class ResultManager {
         return result;
     }
 
-    setFinalResult(resultId, result) {
-        this.results.get(resultId).setFinalResult(result);
+    async setFinalResult(resultId, result) {
+        await this.results.get(resultId).setFinalResult(result);
     }
 
-    setPartialResult(resultId, result) {
-        this.results.get(resultId).setPartialResult(result);
+    async setPartialResult(resultId, result) {
+        await this.results.get(resultId).setPartialResult(result);
     }
 
-    setErrorResult(resultId, result) {
-        this.results.get(resultId).setErrorResult(result);
+    async setErrorResult(resultId, result) {
+        await this.results.get(resultId).setErrorResult(result);
     }
 }
-
-export default ResultManager;

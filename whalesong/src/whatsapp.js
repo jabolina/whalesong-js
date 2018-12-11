@@ -3,8 +3,10 @@ import puppeteer from "puppeteer";
 import fs from "fs";
 import winston from "winston";
 
-import ResultManager from "./manager/result";
-import { WHATSAPP_WEB_URL, DEFAULT_CHROMIUM_ARGS, DEFAULT_DATA_DIR, SCRIPTLET_PATH } from "./constants";
+import { ResultManager } from "./manager/result";
+import {
+    WHATSAPP_WEB_URL, DEFAULT_CHROMIUM_ARGS, DEFAULT_DATA_DIR, SCRIPTLET_PATH,
+} from "./constants";
 
 export const logger = winston.createLogger({
     level: "info",
@@ -79,15 +81,15 @@ export class WhatsAppDriver extends WhatsAppInterface {
         + "(KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36");
         await this.page.setViewport({ width: 800, height: 600 });
         await this.page.on("console", ({ _text }) => logger.info(`${_text}`));
-        await this.page.exposeFunction("whalesongPushResult", (result) => {
+        await this.page.exposeFunction("whalesongPushResult", async (result) => {
             if (result) {
                 try {
                     if (result.type === "FINAL") {
-                        this.resultManager.setFinalResult(result.exId, result.params);
+                        await this.resultManager.setFinalResult(result.exId, result.params);
                     } else if (result.type === "PARTIAL") {
-                        this.resultManager.setPartialResult(result.exId, result.params);
+                        await this.resultManager.setPartialResult(result.exId, result.params);
                     } else if (result.type === "ERROR") {
-                        this.resultManager.setErrorResult(result.exId, result.params);
+                        await this.resultManager.setErrorResult(result.exId, result.params);
                     }
                 } catch (err) {
                     throw err;
