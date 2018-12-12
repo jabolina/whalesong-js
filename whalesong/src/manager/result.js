@@ -1,12 +1,10 @@
 import { fork } from "child_process";
 import path from "path";
-import EventEmitter from "events";
 
 import { MESSAGE_TYPES } from "./sub-process/constants";
 
-class Result extends EventEmitter {
+class Result {
     constructor(id, name, result) {
-        super();
         this.id = id;
         this.name = name;
         this.result = result;
@@ -21,17 +19,14 @@ class Result extends EventEmitter {
     }
 
     setFinalResult(result) {
-        this.emit("result", result);
         this.result = result;
     }
 
     setPartialResult(result) {
-        this.emit("result", result);
         this.result = result;
     }
 
     setErrorResult(exception) {
-        this.emit("error", exception);
         this.result = exception;
     }
 
