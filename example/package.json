@@ -1,0 +1,14 @@
+{
+  "name": "whalesong-js-examples",
+  "version": "1.0.0",
+  "description": "Examples using WhalesonJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jabolina <joseaugusto.bolina@hotmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "whalesong-js": "0.0.13"
+  }
+}
