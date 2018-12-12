@@ -21,9 +21,7 @@ export class MessageManager extends BaseModelManager {
         this.subManagers.set("info", new MessageInfoManager(driver, name));
     }
 
-    async downloadMedia() {
-        // no empty
-    }
+    async downloadMedia() {}
 
     fetchInfo() {
         return this.executeCommand("fetchInfo");
@@ -40,6 +38,6 @@ export class MessageManager extends BaseModelManager {
 
 export class MessageCollectionManager extends MessageManager {
     monitorNew() {
-        return this.executeCommand("monitorNew");
+        return this.executeCommand("monitorNew", {}, "MonitorResult");
     }
 }
