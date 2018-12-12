@@ -102,7 +102,6 @@ export class MonitorResult extends BasePartialResult {
     }
 
     setPartialResult(partial) {
-        // super.setPartialResult(partial);
         this.sendToWorker({
             messageType: MESSAGE_TYPES.METHOD,
             params: {
