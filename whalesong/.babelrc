@@ -11,6 +11,7 @@
     "@babel/plugin-proposal-json-strings"
   ],
   "ignore": [
-    "whatsapp-output/whalesong.js"
+    "whatsapp-output/whalesong.js",
+    "./src/chromium-data/**/*"
   ]
 }
