@@ -2,6 +2,7 @@ import { fork } from "child_process";
 import path from "path";
 
 import { MESSAGE_TYPES } from "./sub-process/constants";
+import{ dynamicInstantiation } from "../error";
 
 class Result {
     constructor(id, name, result) {
@@ -47,7 +48,8 @@ export class BasePartialResult extends Result {
         this.queue.push(result);
     }
 
-    setErrorResult(exception) {
+    setErrorResult(error) {
+        const exception = dynamicInstantiation(error);
         super.setErrorResult(exception);
         this.queue.push(exception);
     }
@@ -106,6 +108,16 @@ export class MonitorResult extends BasePartialResult {
         });
     }
 
+    setErrorResult(error) {
+        this.sendToWorker({
+            messageType: MESSAGE_TYPES.METHOD,
+            params: {
+                method: "setErrorResult",
+                content: error,
+            },
+        });
+    }
+
     cancel() {
         super.cancel();
         if (this.worker) {
@@ -134,6 +146,16 @@ export class ResultManager {
         this.results.set(id, result);
 
         return result;
+    }
+
+    getIterators() {
+        const iterators = [];
+        this.results.forEach((value) => {
+            if (value instanceof MonitorResult) {
+                iterators.push(value);
+            }
+        });
+        return iterators;
     }
 
     async setFinalResult(resultId, result) {

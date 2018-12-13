@@ -41,4 +41,9 @@ export class WhatsApp extends BaseManager {
 
         return data;
     }
+
+    async close() {
+        this.driver.cancelAll();
+        await this.driver.close();
+    }
 }
