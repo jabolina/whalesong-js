@@ -6,6 +6,7 @@ import { ResultManager } from "./manager/result";
 import {
     WHATSAPP_WEB_URL, DEFAULT_CHROMIUM_ARGS, DEFAULT_DATA_DIR, SCRIPTLET_PATH,
 } from "./constants";
+import { StopIterator } from "./error";
 
 class WhatsAppInterface {
     constructor() {
@@ -90,6 +91,11 @@ export class WhatsAppDriver extends WhatsAppInterface {
         if (this.browser) {
             await this.browser.close();
         }
+    }
+
+    cancelAll() {
+        this.resultManager.getIterators()
+            .forEach(iterator => iterator.setErrorResult({ message: "Canceling iterators", name: "StopIterator" }));
     }
 
     async evaluate(command) {
