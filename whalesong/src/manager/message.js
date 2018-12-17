@@ -5,10 +5,9 @@ const downloadMedia = async (driver, model) => {
     const dataBuffer = await driver.downloadFile(model.clientUrl);
 
     try {
-        const decryptedMedia = await decrypt(dataBuffer, model);
-        return (Buffer.from(decryptedMedia)).toString("base64");
+        return decrypt(dataBuffer, model);
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 };
 
