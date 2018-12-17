@@ -1,4 +1,17 @@
-import { BaseModelManager } from "./index";
+import { BaseModelManager, BaseCollectionManager } from "./index";
+import { decrypt } from "../crypto";
+
+const downloadMedia = async (driver, model) => {
+    const dataBuffer = await driver.downloadFile(model.clientUrl);
+
+    try {
+        const decryptedMedia = await decrypt(dataBuffer, model);
+        return (Buffer.from(decryptedMedia)).toString("base64");
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 
 export class MessageAckManager extends BaseModelManager {
     // no empty
@@ -21,7 +34,9 @@ export class MessageManager extends BaseModelManager {
         this.subManagers.set("info", new MessageInfoManager(driver, name));
     }
 
-    async downloadMedia() {}
+    async downloadMedia(model) {
+        return downloadMedia(this.driver, model);
+    }
 
     fetchInfo() {
         return this.executeCommand("fetchInfo");
@@ -36,7 +51,12 @@ export class MessageManager extends BaseModelManager {
     }
 }
 
-export class MessageCollectionManager extends MessageManager {
+export class MessageCollectionManager extends BaseCollectionManager {
+    constructor(driver, name) {
+        super(driver, name);
+        this.MODEL_MANAGER_CLASS = new MessageManager(driver, name);
+    }
+
     monitorNew() {
         return this.executeCommand("monitorNew", {}, "MonitorResult");
     }
