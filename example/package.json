@@ -9,6 +9,6 @@
   "author": "jabolina <joseaugusto.bolina@hotmail.com>",
   "license": "ISC",
   "dependencies": {
-    "whalesong-js": "0.0.13"
+    "whalesong-js": "0.0.18"
   }
 }
