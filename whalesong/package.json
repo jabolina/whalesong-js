@@ -20,8 +20,8 @@
   "dependencies": {
     "@babel/polyfill": "7.0.0",
     "base-64": "0.1.0",
-    "libsignal": "2.0.0",
-    "puppeteer": "1.11.0"
+    "puppeteer": "1.11.0",
+    "request": "2.88.0"
   },
   "devDependencies": {
     "@babel/cli": "7.1.5",

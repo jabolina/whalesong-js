@@ -14,6 +14,7 @@ module.exports = {
     "rules": {
         "no-await-in-loop": 0,
         "import/no-cycle": 0,
+        "no-plusplus": 0,
         "no-restricted-syntax": 0,
         "indent": [
             "error",

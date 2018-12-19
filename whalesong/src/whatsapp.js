@@ -1,12 +1,13 @@
 /* eslint class-methods-use-this: 0 */
 import puppeteer from "puppeteer";
 import fs from "fs";
-import https from "https";
 
 import { ResultManager } from "./manager/result";
 import {
     WHATSAPP_WEB_URL, DEFAULT_CHROMIUM_ARGS, DEFAULT_DATA_DIR, SCRIPTLET_PATH,
 } from "./constants";
+
+const request = require("request").defaults({ encoding: null });
 
 class WhatsAppInterface {
     constructor() {
@@ -27,7 +28,7 @@ class WhatsAppInterface {
         throw Error("Implement `executeCommand` method");
     }
 }
-// { N: 13, r: 8, p: 1 }
+
 // eslint-disable-next-line
 export class WhatsAppDriver extends WhatsAppInterface {
     constructor(headless, ...args) {
@@ -108,20 +109,20 @@ export class WhatsAppDriver extends WhatsAppInterface {
         return this.evaluate(completeCommand).then(() => resultObject);
     }
 
-    async downloadFile(url) {
+    async downloadFile(uri) {
         return new Promise((resolve) => {
-            https.get(url, (res) => {
-                const data = [];
-
-                res.on("data", (chunk) => {
-                    data.push(chunk);
-                });
-
-                res.on("end", () => {
-                    const buffer = Buffer.concat(data);
-                    resolve(buffer);
-                });
-            })
+            request.get({
+                uri,
+                headers: {
+                    "User-Agent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)",
+                },
+            }, (error, response, body) => {
+                if (!error) {
+                    resolve(body);
+                } else {
+                    throw error;
+                }
+            });
         });
     }
 }
