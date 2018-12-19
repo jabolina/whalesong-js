@@ -28,6 +28,19 @@ const { WhatsApp } = require("whalesong-js");
                     }
 
                     (await chatStore.get(item.chat.id).sendSeen());
+
+                    if (item.isMedia || item.isMMS) {
+                        const model = (await messages.getItemById(item.id));
+                        const media = await model.downloadMedia(item);
+                        
+                        console.log(`New ${item.type} message from ${item.chat.contact.pushname}`);
+
+                        await chat.sendMedia(media.toString("base64"), item.mimetype, "", "", item.id);
+                    } else {
+                        console.log(`New message: [${item.body}] from [${item.chat.contact.pushname}]`);
+                        (await chat.sendText(item.body, item.id));
+                    }
+
                     (await chatStore.get(item.chat.id).sendText(item.body, item.id));
                 }
             }).on("error", (error) => {
@@ -36,5 +49,5 @@ const { WhatsApp } = require("whalesong-js");
         }
     }).on("error", (error) => {
         console.error(`Error on stream: ${error.stack}`);
-    })
+    });
 })();
