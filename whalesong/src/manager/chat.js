@@ -19,6 +19,19 @@ export class ChatManager extends BaseModelManager {
         return super.executeCommand("sendText", params);
     }
 
+    sendMedia(mediaData, contentType = "", fileName = "", caption = "", quotedMsgId = "", mentions = "") {
+        const params = {
+            mediaData,
+            contentType,
+            fileName,
+            caption,
+            quotedMsgId,
+            mentions,
+        };
+
+        return super.executeCommand("sendMedia", params);
+    }
+
     sendSeen() {
         return super.executeCommand("sendSeen");
     }
