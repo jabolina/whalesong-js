@@ -37,7 +37,7 @@ export const decrypt = (dataBuffer, model) => {
         }
     }
 
-    composedToken = hdkf(mediaKey, model.type);
+    composedToken = hdkf(mediaKey, model.type, 112);
 
     const iv = composedToken.slice(0, 16);
     const cipherKey = composedToken.slice(16, 48);
