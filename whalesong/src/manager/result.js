@@ -2,13 +2,17 @@ import { fork } from "child_process";
 import path from "path";
 
 import { MESSAGE_TYPES } from "./sub-process/constants";
-import{ dynamicInstantiation } from "../error";
+import { dynamicInstantiation } from "../error";
 
 class Result {
-    constructor(id, name, result) {
+    constructor(id, result) {
         this.id = id;
-        this.name = name;
         this.result = result;
+        this.mapTo = {};
+    }
+
+    map(data) {
+        return Object.assign(this.mapTo, data);
     }
 
     getId() {
@@ -19,16 +23,20 @@ class Result {
         return this.name;
     }
 
+    setMapTo(cls) {
+        this.mapTo = cls;
+    }
+
     setFinalResult(result) {
-        this.result = result;
+        this.result = this.map(result);
     }
 
     setPartialResult(result) {
-        this.result = result;
+        this.result = this.map(result);
     }
 
     setErrorResult(exception) {
-        this.result = exception;
+        this.result = this.map(exception);
     }
 
     getResult() {
@@ -37,8 +45,8 @@ class Result {
 }
 
 export class BasePartialResult extends Result {
-    constructor(id, name, result) {
-        super(id, name, result);
+    constructor(id, result) {
+        super(id, result);
         this.queue = [];
         this.keepRunning = true;
     }
@@ -66,8 +74,8 @@ export class BasePartialResult extends Result {
 }
 
 export class MonitorResult extends BasePartialResult {
-    constructor(id, name, result) {
-        super(id, name, result);
+    constructor(id, result) {
+        super(id, result);
 
         this.worker = fork(path.join(__dirname, "sub-process", "result"), {
             detatched: true,
@@ -77,7 +85,6 @@ export class MonitorResult extends BasePartialResult {
             messageType: MESSAGE_TYPES.CREATE,
             params: {
                 id,
-                name,
                 result,
             },
         });
@@ -137,12 +144,12 @@ export class ResultManager {
         return `${this.id++}`;
     }
 
-    requestResult(resultType) {
-        const name = Math.random().toString(36).substr(0, 10);
+    requestResult(resultType, manage) {
         const id = this.genNextId();
-        const constructorInString = `new ${resultType}('${id}', '${name}', {});`;
+        const constructorInString = `new ${resultType}('${id}', {});`;
         // eslint-disable-next-line
         const result = eval(constructorInString);
+        result.setMapTo(manage);
         this.results.set(id, result);
 
         return result;

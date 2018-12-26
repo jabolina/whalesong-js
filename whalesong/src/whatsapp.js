@@ -103,10 +103,10 @@ export class WhatsAppDriver extends WhatsAppInterface {
         await this.page.evaluate(command);
     }
 
-    executeCommand(command, params = {}, resultType = "Result") {
-        const resultObject = this.resultManager.requestResult(resultType);
+    executeCommand(command, params = {}, resultType = "Result", manage = {}) {
+        const resultObject = this.resultManager.requestResult(resultType, manage);
         const completeCommand = `(function() {{window.manager.executeCommand("${resultObject.getId()}", "${command}", ${JSON.stringify(params)})}})()`;
-        return this.evaluate(completeCommand).then(() => resultObject);
+        return this.evaluate(completeCommand).then(() => resultObject.getResult());
     }
 
     async downloadFile(uri) {

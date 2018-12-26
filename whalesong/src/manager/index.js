@@ -1,9 +1,10 @@
 import { COMMAND_SEPARATOR } from "../constants";
 
 export class BaseManager {
-    constructor(driver = null, baseName = "") {
+    constructor(driver = null, baseName = "", managingObject = {}) {
         this.driver = driver;
         this.baseName = baseName;
+        this.manageObject = managingObject;
         this.subManagers = new Map();
     }
 
@@ -21,7 +22,7 @@ export class BaseManager {
 
     executeCommand(command, args, resultType) {
         const cmd = BaseManager.buildCommand(command, this.baseName);
-        return this.driver.executeCommand(cmd, args, resultType);
+        return this.driver.executeCommand(cmd, args, resultType, this.manageObject);
     }
 
     addSubManager(name, sub) {
@@ -38,13 +39,8 @@ export class BaseManager {
 }
 
 export class BaseModelManager extends BaseManager {
-    constructor(driver, name) {
-        super(driver, name);
-        this.MODEL_CLASS = {};
-    }
-
     getModel() {
-        return Object.assign(this.MODEL_CLASS, this.executeCommand("getModel"));
+        return this.executeCommand("getModel");
     }
 
     static buildCommand(cmd, id) {
@@ -69,11 +65,6 @@ export class BaseModelManager extends BaseManager {
 }
 
 export class BaseCollectionManager extends BaseModelManager {
-    constructor(driver, name) {
-        super(driver, name);
-        this.MODEL_MANAGER_CLASS = {};
-    }
-
     getLength() {
         return this.executeCommand("getLength");
     }
@@ -83,8 +74,7 @@ export class BaseCollectionManager extends BaseModelManager {
     }
 
     async getItemById(id) {
-        const { result } = await this.executeCommand("getItemById", { id });
-        return Object.assign(this.MODEL_MANAGER_CLASS, result);
+        return this.executeCommand("getItemById", { id });
     }
 
     removeItemById(id) {

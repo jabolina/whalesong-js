@@ -4,8 +4,7 @@ class Chat extends BaseManager {}
 
 export class ChatManager extends BaseModelManager {
     constructor(driver, name) {
-        super(driver, name);
-        this.MODEL_CLASS = new Chat(driver, name);
+        super(driver, name, new Chat(driver, name));
     }
 
     sendText(text, quotedMsgId = "", mentions = "", linkDesc = "") {
@@ -43,12 +42,19 @@ export class ChatManager extends BaseModelManager {
 
 export class ChatCollectionManager extends BaseCollectionManager {
     constructor(driver, name) {
-        super(driver, name);
-        this.MODEL_MANAGER_CLASS = new ChatManager(driver, name);
+        super(driver, name, new ChatManager(driver, name));
     }
 
     getActive() {
         return this.executeCommand("getActive");
+    }
+
+    ensureChatWithContact(contactId) {
+        return this.executeCommand("ensureChatWithContact", { contactId });
+    }
+
+    getChatId(number) {
+        return this.executeCommand("getChatId", { number });
     }
 
     createGroup(name, contactIds, picture = "", picturePreview = "") {
