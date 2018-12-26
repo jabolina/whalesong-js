@@ -52,8 +52,7 @@ export class MessageManager extends BaseModelManager {
 
 export class MessageCollectionManager extends BaseCollectionManager {
     constructor(driver, name) {
-        super(driver, name);
-        this.MODEL_MANAGER_CLASS = new MessageManager(driver, name);
+        super(driver, name, new MessageManager(driver, name));
     }
 
     monitorNew() {

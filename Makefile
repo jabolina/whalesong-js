@@ -5,6 +5,7 @@ help:
 	@echo "-----------------------------------------------------------------------"
 	@echo "help:                     This help"
 	@echo "requirements:             Download requirements"
+	@echo "build:                    Build application"
 	@echo "publish:                  Publish new version on Pypi"
 	@echo "clean:                    Clean compiled files"
 	@echo "-----------------------------------------------------------------------"

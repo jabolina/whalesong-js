@@ -4,8 +4,7 @@ class Storage extends BaseManager {}
 
 class StorageManager extends BaseModelManager {
     constructor(driver, name) {
-        super(driver, name);
-        this.MODEL_CLASS = new Storage(driver, name);
+        super(driver, name, new Storage(driver, name));
     }
 
     getStorage() {

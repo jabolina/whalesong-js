@@ -359,16 +359,20 @@ export class ChatCollectionManager extends CollectionManager {
     return ChatManager;
   }
 
-  constructor(collection, mediaCollectionClass, createPeerForContact) {
+  constructor(collection, mediaCollectionClass, createPeerForContact, wapQuery, stream) {
     super(collection);
 
     ChatManager.prototype.buildMediaCollection = function() {
       return new mediaCollectionClass();
     }
 
+    ChatManager.prototype.stream = stream;
+
     this.createPeerForContact = function(contactId) {
       return new createPeerForContact(contactId);
     }
+
+    this.wapQuery = wapQuery;
   }
 
 
@@ -424,4 +428,36 @@ export class ChatCollectionManager extends CollectionManager {
 
     return await this.collection.forwardMessagesToChats(messages, chats);
   }
+
+  @command
+  async getChatId({
+    number
+  }) {
+    function eightDigitsPhone(number) {
+      return number.length < 13 ? number : number.substr(0, 4) + number.substr(5, 8);
+    }
+
+    function nineDigitsPhone(number) {
+      return number.length <= 12 ? number.substr(0, 4) + '9' + number.substr(4, 8) : number;
+    }
+
+    const phone8 = `${eightDigitsPhone(number)}@c.us`;
+    const phone9 = `${nineDigitsPhone(number)}@c.us`;
+
+    let data = await this.wapQuery.getCapabilities([phone8]);
+
+    if (data[phone8]) {
+      return phone8;
+    }
+
+    data = await this.wapQuery.getCapabilities([phone9]);
+
+    if (data[phone9]) {
+      return phone9;
+    }
+
+    return "";
+  }
+
+  
 }

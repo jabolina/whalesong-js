@@ -3,8 +3,8 @@ import { MESSAGE_TYPES } from "./constants";
 import { StopIterator } from "../../error";
 
 class PartialResultSubProcess extends BasePartialResult {
-    constructor(id, name, result) {
-        super(id, name, result);
+    constructor(id, result) {
+        super(id, result);
 
         this.writeLock = false;
     }
