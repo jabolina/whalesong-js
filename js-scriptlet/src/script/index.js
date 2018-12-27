@@ -65,14 +65,13 @@ function getRequirementsDefs() {
       }
     },
     'chatManager': {
-      'requirements': ['store', 'mediaCollectionClass', 'createPeerForContact', 'wap', 'stream'],
+      'requirements': ['store', 'mediaCollectionClass', 'createPeerForContact', 'wap'],
       'build': function(mainManager, artifacts) {
         let manager = new ChatCollectionManager(
           artifacts['store'].Chat,
           artifacts['mediaCollectionClass'],
           artifacts['createPeerForContact'],
-          artifacts['wap'],
-          artifacts['stream']
+          artifacts['wap']
         );
         mainManager.addSubmanager('chats', manager);
         return manager;
@@ -259,4 +258,6 @@ export default function createManagers(mainManager) {
   webpackJsonp([], {
     'whalesong': (x, y, z) => discoveryModules(z)
   }, 'whalesong');
+
+  webpackJsonp([], {"djddhaidag": (x, y, z) => window.Stream = z('"djddhaidag"')['default']}, "djddhaidag");
 }

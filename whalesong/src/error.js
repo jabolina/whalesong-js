@@ -5,6 +5,8 @@ export class BaseError {
     }
 }
 
+export class ExecuteCommand extends BaseError {};
+
 export class StopIterator extends BaseError {}
 
 export class DecryptionError extends BaseError {}

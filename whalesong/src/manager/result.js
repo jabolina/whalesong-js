@@ -1,8 +1,12 @@
 import { fork } from "child_process";
 import path from "path";
 
+
 import { MESSAGE_TYPES } from "./sub-process/constants";
-import { dynamicInstantiation } from "../error";
+import {
+    ExecuteCommand, dynamicInstantiation, BaseError, StopIterator,
+} from "../error";
+import { isType } from "../util";
 
 class Result {
     constructor(id, result) {
@@ -28,7 +32,11 @@ class Result {
     }
 
     setFinalResult(result) {
-        this.result = this.map(result);
+        if (isType.isString(result)) {
+            this.result = result;
+        } else {
+            this.result = this.map(result);
+        }
     }
 
     setPartialResult(result) {
@@ -36,7 +44,33 @@ class Result {
     }
 
     setErrorResult(exception) {
-        this.result = this.map(exception);
+        if (!(exception instanceof BaseError)) {
+            this.result = new ExecuteCommand(exception.message);
+        } else {
+            this.result = exception;
+        }
+    }
+
+    awaitResult() {
+        const fullResultObject = this;
+        function delayed() {
+            return new Promise(resolve => setTimeout(resolve, 100));
+        }
+
+        function getResult() {
+            return new Promise(resolve => resolve(fullResultObject.getResult()));
+        }
+
+        function poll() {
+            return getResult().then((value) => {
+                if (Object.keys(value).length) {
+                    return value;
+                }
+                return delayed().then(poll);
+            });
+        }
+
+        return poll();
     }
 
     getResult() {
@@ -69,7 +103,7 @@ export class BasePartialResult extends Result {
 
     cancel() {
         this.keepRunning = false;
-        this.setErrorResult(new Error("Stopping async iterator"));
+        this.setErrorResult(new StopIterator("Stopping async iterator"));
     }
 }
 

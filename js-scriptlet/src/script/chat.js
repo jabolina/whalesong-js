@@ -218,6 +218,7 @@ export class ChatManager extends ModelManager {
 
   @command
   async sendSeen() {
+    Stream.markAvailable();
     return await this.model.sendSeen();
   }
 
@@ -359,14 +360,12 @@ export class ChatCollectionManager extends CollectionManager {
     return ChatManager;
   }
 
-  constructor(collection, mediaCollectionClass, createPeerForContact, wapQuery, stream) {
+  constructor(collection, mediaCollectionClass, createPeerForContact, wapQuery) {
     super(collection);
 
     ChatManager.prototype.buildMediaCollection = function() {
       return new mediaCollectionClass();
     }
-
-    ChatManager.prototype.stream = stream;
 
     this.createPeerForContact = function(contactId) {
       return new createPeerForContact(contactId);
@@ -434,11 +433,11 @@ export class ChatCollectionManager extends CollectionManager {
     number
   }) {
     function eightDigitsPhone(number) {
-      return number.length < 13 ? number : number.substr(0, 4) + number.substr(5, 8);
+      return number.length < 13 ? number : number.substr(0, 4) + number.substr(5, 8)
     }
 
     function nineDigitsPhone(number) {
-      return number.length <= 12 ? number.substr(0, 4) + '9' + number.substr(4, 8) : number;
+        return number.length <= 12 ? number.substr(0, 4) + '9' + number.substr(4, 8) : number
     }
 
     const phone8 = `${eightDigitsPhone(number)}@c.us`;
@@ -448,16 +447,14 @@ export class ChatCollectionManager extends CollectionManager {
 
     if (data[phone8]) {
       return phone8;
+    } else {
+      data = await this.wapQuery.getCapabilities([phone9]);
+
+      if (data[phone9]) {
+        return phone9;
+      } else {
+        return phone8;
+      }
     }
-
-    data = await this.wapQuery.getCapabilities([phone9]);
-
-    if (data[phone9]) {
-      return phone9;
-    }
-
-    return "";
   }
-
-  
 }

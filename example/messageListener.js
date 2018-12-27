@@ -11,7 +11,7 @@ const { WhatsApp } = require("whalesong-js");
     const chats = whatsappClient.getSubManager("chats");
     const chatStore = new Map();
 
-    stream.getResult().on("message", async (result) => {
+    stream.on("message", async (result) => {
         const { value } = result;
 
         if (value === "CONNECTED" && !connected) {
@@ -20,7 +20,7 @@ const { WhatsApp } = require("whalesong-js");
 
             const messageStream = await messages.monitorNew();
 
-            messageStream.getResult().on("message", async (message) => {
+            messageStream.on("message", async (message) => {
                 const { item } = message;
                 if (!item.isNotification) {
                     if (!chatStore.has(item.chat.id)) {

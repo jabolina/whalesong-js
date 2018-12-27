@@ -106,7 +106,7 @@ export class WhatsAppDriver extends WhatsAppInterface {
     executeCommand(command, params = {}, resultType = "Result", manage = {}) {
         const resultObject = this.resultManager.requestResult(resultType, manage);
         const completeCommand = `(function() {{window.manager.executeCommand("${resultObject.getId()}", "${command}", ${JSON.stringify(params)})}})()`;
-        return this.evaluate(completeCommand).then(() => resultObject.getResult());
+        return this.evaluate(completeCommand).then(() => resultObject.awaitResult().then(v => v));
     }
 
     async downloadFile(uri) {
@@ -116,7 +116,7 @@ export class WhatsAppDriver extends WhatsAppInterface {
                 headers: {
                     "User-Agent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)",
                 },
-            }, (error, response, body) => {
+            }, (error, _response, body) => {
                 if (!error) {
                     resolve(body);
                 } else {
