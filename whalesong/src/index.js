@@ -32,8 +32,8 @@ export class WhatsApp extends BaseManager {
 
     async qrCode() {
         let data;
-        if (this.page) {
-            const element = await this.page.$("div[data-ref]");
+        if (this.driver && this.driver.page) {
+            const element = await this.driver.page.$("div[data-ref]");
             if (element) {
                 data = await element.screenshot({ encoding: "base64" });
             }

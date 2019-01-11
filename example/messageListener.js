@@ -47,6 +47,9 @@ const { WhatsApp } = require("whalesong-js");
             }).on("error", (error) => {
                 console.error(`Error listening new messages: ${error.stack}`);
             });
+        } else if (!connected) {
+            const qrCode = await whatsappClient.qrCode();
+            console.log(`QR Code: ${qrCode}`);
         }
     }).on("error", (error) => {
         console.error(`Error on stream: ${error.stack}`);

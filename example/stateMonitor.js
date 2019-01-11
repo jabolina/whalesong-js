@@ -26,7 +26,7 @@ const { WhatsApp } = require("whalesong-js");
 
     async function monitorStream(stream) {
         const streamEvent = await stream.monitorField("stream");
-        streamEvent.getResult().on("message", (result) => {
+        streamEvent.on("message", (result) => {
                 console.log(`MONITORING_STREAM: ${JSON.stringify(result, null, 2)}`);
             }).on("error", (error) => {
                 console.error(`ERROR: ${error}`);
@@ -35,7 +35,7 @@ const { WhatsApp } = require("whalesong-js");
 
     async function monitorState(whatsappClient, stream) {
         const stateEvent = await stream.monitorField("state");
-        stateEvent.getResult().on("message", async (result) => {
+        stateEvent.on("message", async (result) => {
                 console.log(`MONITORING_STATE_FOR_QR: ${JSON.stringify(result, null, 2)}`);
 
                 if (result.value === "UNPAIRED_IDLE") {
@@ -51,7 +51,7 @@ const { WhatsApp } = require("whalesong-js");
             });
     }
 
-    const whatsappClient = new WhatsApp(false);
+    const whatsappClient = new WhatsApp(true);
 
     await whatsappClient.build();
 
