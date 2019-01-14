@@ -1,6 +1,6 @@
 {
   "name": "whalesong-js",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "Whalesong is a library to manage WebApps remotely. Currently WhatsappWeb is implemented",
   "main": "./lib/index.js",
   "scripts": {

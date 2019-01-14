@@ -70,10 +70,10 @@ export class BaseCollectionManager extends BaseModelManager {
     }
 
     getItems() {
-        return this.executeCommand("getItems");
+        return this.executeCommand("getItems", {}, "MonitorResult");
     }
 
-    async getItemById(id) {
+    getItemById(id) {
         return this.executeCommand("getItemById", { id });
     }
 
