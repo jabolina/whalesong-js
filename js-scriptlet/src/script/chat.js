@@ -106,9 +106,11 @@ export class ChatManager extends ModelManager {
     }
 
     if (!extraData['quotedMsg']) {
+      const expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+
       if (linkDesc) {
         extraData['linkPreview'] = linkDesc;
-      } else {
+      } else if (expression.test(text) && (await manager.getSubmanager('wap'))) {
         extraData['linkPreview'] = await manager.getSubmanager('wap').queryLinkPreview({
           text
         });
