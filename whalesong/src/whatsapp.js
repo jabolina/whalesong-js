@@ -21,7 +21,7 @@ class WhatsAppInterface {
     }
 
     async close() {
-        throw Error("Implement `build` method");
+        throw Error("Implement `close` method");
     }
 
     async executeCommand() {

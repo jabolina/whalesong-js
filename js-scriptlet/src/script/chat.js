@@ -360,7 +360,7 @@ export class ChatCollectionManager extends CollectionManager {
     return ChatManager;
   }
 
-  constructor(collection, mediaCollectionClass, createPeerForContact, wapQuery) {
+  constructor(collection, mediaCollectionClass, createPeerForContact) {
     super(collection);
 
     ChatManager.prototype.buildMediaCollection = function() {
@@ -370,8 +370,6 @@ export class ChatCollectionManager extends CollectionManager {
     this.createPeerForContact = function(contactId) {
       return new createPeerForContact(contactId);
     }
-
-    this.wapQuery = wapQuery;
   }
 
 
@@ -442,6 +440,8 @@ export class ChatCollectionManager extends CollectionManager {
 
     const phone8 = `${eightDigitsPhone(number)}@c.us`;
     const phone9 = `${nineDigitsPhone(number)}@c.us`;
+
+    return phone8;
 
     let data = await this.wapQuery.getCapabilities([phone8]);
 

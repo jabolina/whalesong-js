@@ -65,13 +65,12 @@ function getRequirementsDefs() {
       }
     },
     'chatManager': {
-      'requirements': ['store', 'mediaCollectionClass', 'createPeerForContact', 'wap'],
+      'requirements': ['store', 'mediaCollectionClass', 'createPeerForContact'],
       'build': function(mainManager, artifacts) {
         let manager = new ChatCollectionManager(
           artifacts['store'].Chat,
           artifacts['mediaCollectionClass'],
           artifacts['createPeerForContact'],
-          artifacts['wap']
         );
         mainManager.addSubmanager('chats', manager);
         return manager;

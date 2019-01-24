@@ -12,6 +12,7 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
+        "experimentalDecorators": 0,
         "no-await-in-loop": 0,
         "import/no-cycle": 0,
         "no-plusplus": 0,
