@@ -1,9 +1,4 @@
-import {
-  command,
-  monitor,
-  CommandManager,
-  Monitor
-} from '../manager.js';
+import { command, CommandManager, monitor, Monitor } from '../manager.js';
 
 
 export class StorageMonitor extends Monitor {

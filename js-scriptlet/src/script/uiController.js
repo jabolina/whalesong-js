@@ -1,5 +1,3 @@
-import {
-  ModelManager
-} from './common.js';
+import { ModelManager } from './common.js';
 
 export class UIControllerManager extends ModelManager {}

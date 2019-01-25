@@ -1,10 +1,5 @@
-import {
-  command
-} from '../manager.js';
-import {
-  CollectionManager,
-  ModelManager
-} from './common.js';
+import { command } from '../manager.js';
+import { CollectionManager, ModelManager } from './common.js';
 
 export class ProfilePicThumbManager extends ModelManager {
 

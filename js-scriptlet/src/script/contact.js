@@ -1,16 +1,7 @@
-import {
-  command
-} from '../manager.js';
-import {
-  CollectionManager,
-  ModelManager
-} from './common.js';
-import {
-  ProfilePicThumbManager
-} from './profilePicThumb.js';
-import {
-  StatusManager
-} from './status.js';
+import { command } from '../manager.js';
+import { CollectionManager, ModelManager } from './common.js';
+import { ProfilePicThumbManager } from './profilePicThumb.js';
+import { StatusManager } from './status.js';
 
 export class ContactManager extends ModelManager {
 

@@ -1,4 +1,4 @@
-PACKAGE_NAME = scriptlet
+PACKAGE_NAME = whalesongjs
 
 help:
 	@echo "Options"

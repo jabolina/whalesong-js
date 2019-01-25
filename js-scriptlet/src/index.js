@@ -1,5 +1,5 @@
 import MainManager from './manager.js';
-import createManagers from './script/index.js'
+import createManagers from './script'
 
 
 window.manager = new MainManager();

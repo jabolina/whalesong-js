@@ -20,6 +20,14 @@ export class WapManager extends ModelManager {
   }
 
   @command
+  async getCapabilities({
+    contactId
+  }) {
+    const result = await this.model.getCapabilities([contactId]);
+    return !!result[contactId];
+  }
+
+  @command
   async queryLinkPreview({
     text
   }) {
@@ -30,5 +38,12 @@ export class WapManager extends ModelManager {
     }
 
     return result;
+  }
+
+  @command
+  async subscribePresence({
+    id
+  }) {
+    return await this.model.subscribePresence(id)
   }
 }

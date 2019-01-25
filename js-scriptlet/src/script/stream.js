@@ -1,9 +1,5 @@
-import {
-  ModelManager
-} from './common.js';
-import {
-  command
-} from '../manager.js';
+import { command } from '../manager.js';
+import { ModelManager } from './common.js';
 
 
 export class StreamManager extends ModelManager {

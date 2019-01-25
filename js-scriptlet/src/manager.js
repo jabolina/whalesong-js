@@ -1,10 +1,4 @@
-import {
-  BaseError,
-  ManagerNotFound,
-  CommandNotFound,
-  StopMonitor,
-  StopIterator
-} from './errors.js';
+import { BaseError, CommandNotFound, ManagerNotFound, StopIterator, StopMonitor } from './errors.js';
 
 export const ResultTypes = {
   ERROR: 'ERROR',
@@ -242,31 +236,32 @@ export default class MainManager extends CommandManager {
     if (newExecutions) {
       for (let idx in newExecutions) {
         let executionsObj = newExecutions[idx];
-          if (!executionsObj['exId']) {
-            errors.push({
-              'name': 'RequiredExecutionId',
-              'message': 'Execuction ID is required',
-              'executionsObj': executionsObj
-            });
 
-            continue;
-          }
+        if (!executionsObj['exId']) {
+          errors.push({
+            'name': 'RequiredExecutionId',
+            'message': 'Execuction ID is required',
+            'executionsObj': executionsObj
+          });
 
-          if (!executionsObj['command']) {
-            errors.push({
-              'name': 'RequiredCommandName',
-              'message': 'Command name is required',
-              'executionsObj': executionsObj
-            });
-            continue;
-          }
-          try {
-            this.executeCommand(executionsObj['exId'], executionsObj['command'], executionsObj['params'] || {});
-          } catch (err) {
-            console.error(err, executionsObj);
-            throw err;
-          }
+          continue;
         }
+
+        if (!executionsObj['command']) {
+          errors.push({
+            'name': 'RequiredCommandName',
+            'message': 'Command name is required',
+            'executionsObj': executionsObj
+          });
+          continue;
+        }
+        try {
+          this.executeCommand(executionsObj['exId'], executionsObj['command'], executionsObj['params'] || {});
+        } catch (err) {
+          console.error(err, executionsObj);
+          throw err;
+        }
+      }
     }
 
     return {
@@ -298,7 +293,7 @@ export default class MainManager extends CommandManager {
       console.error(err, command, params);
       if ((err instanceof Error) || (err instanceof BaseError)) {
         this.resultManager.setErrorResult(exId, {
-          'name': err.name,
+          'name': err.displayName || err.name,
           'message': err.message,
           'params': err.params || {}
         });
@@ -315,5 +310,10 @@ export default class MainManager extends CommandManager {
     monitorId
   }) {
     return this.monitorManager.removeMonitor(monitorId);
+  }
+
+  @command
+  async ping() {
+    return 'pong';
   }
 }

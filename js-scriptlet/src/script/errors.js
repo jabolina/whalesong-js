@@ -1,6 +1,4 @@
-import {
-  BaseError
-} from '../errors.js';
+import { BaseError } from '../errors.js';
 
 export class ModelNotFound extends BaseError {};
 

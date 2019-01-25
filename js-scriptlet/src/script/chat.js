@@ -1,25 +1,13 @@
-import {
-  command
-} from '../manager.js';
-import {
-  CollectionManager,
-  ModelManager
-} from './common.js';
-import {
-  MessageManager,
-  MessageCollectionManager
-} from './message.js';
-import {
-  ContactManager
-} from './contact.js';
-import {
-  GroupMetadataManager
-} from './groupMetadata.js';
-import {
-  SendMessageFail,
-  ModelNotFound
-} from './errors.js';
 import b64toblob from 'b64-to-blob';
+import { command } from '../manager.js';
+import { CollectionManager, ModelManager } from './common.js';
+import { ContactManager } from './contact.js';
+import { ModelNotFound, SendMessageFail } from './errors.js';
+import { GroupMetadataManager } from './groupMetadata.js';
+import { LiveLocationManager } from './liveLocation.js';
+import { MessageCollectionManager } from './message.js';
+import { MuteManager } from './mute.js';
+import { PresenceManager } from './presence.js';
 
 
 export class MsgLoadStateManager extends ModelManager {}
@@ -34,7 +22,9 @@ export class ChatManager extends ModelManager {
       contact: item.contact ? ContactManager.mapModel(item.contact) : null,
       groupMetadata: item.groupMetadata ? GroupMetadataManager.mapModel(item.groupMetadata) : null,
       lastReceivedKey: item.lastReceivedKey ? item.lastReceivedKey._serialized : null,
-      msgs: null
+      msgs: null,
+      mute: MuteManager.mapModel(item.mute),
+      liveLocationQueried: item.liveLocationQueried
     });
   }
 
@@ -46,8 +36,13 @@ export class ChatManager extends ModelManager {
       this.addSubmanager('metadata', new GroupMetadataManager(this.model.groupMetadata));
     } catch (err) {}
 
-    this.addSubmanager('presence', manager.getSubmanager('presences').getSubmanager(this.model.id._serialized));
-    this.addSubmanager('contact', manager.getSubmanager('contacts').getSubmanager(this.model.contact.id._serialized));
+    this.addSubmanager('presence', new PresenceManager(this.model.presence));
+    this.addSubmanager('contact', new ContactManager(this.model.contact));
+    this.addSubmanager('mute', new MuteManager(this.model.mute));
+
+    if (this.model.liveLocation) {
+      this.addSubmanager('liveLocation', new LiveLocationManager(this.model.liveLocation));
+    }
   }
 
   async _sendMessage(send_fn, check_fn) {
@@ -106,11 +101,9 @@ export class ChatManager extends ModelManager {
     }
 
     if (!extraData['quotedMsg']) {
-      const expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
-
       if (linkDesc) {
         extraData['linkPreview'] = linkDesc;
-      } else if (expression.test(text) && (await manager.getSubmanager('wap'))) {
+      } else {
         extraData['linkPreview'] = await manager.getSubmanager('wap').queryLinkPreview({
           text
         });
@@ -220,7 +213,7 @@ export class ChatManager extends ModelManager {
 
   @command
   async sendSeen() {
-    Stream.markAvailable();
+    this.stream.markAvailable();
     return await this.model.sendSeen();
   }
 
@@ -353,7 +346,15 @@ export class ChatManager extends ModelManager {
     return false;
   }
 
+  @command
+  async findLiveLocation() {
+    if (!this.model.liveLocation) {
+      await manager.getSubmanager('liveLocations').findItem(this.model.id);
+      this.addSubmanager('liveLocation', new LiveLocationManager(this.model.liveLocation));
+    }
 
+    return LiveLocationManager.mapModel(this.model.liveLocation);
+  }
 }
 
 export class ChatCollectionManager extends CollectionManager {
@@ -362,12 +363,16 @@ export class ChatCollectionManager extends CollectionManager {
     return ChatManager;
   }
 
-  constructor(collection, mediaCollectionClass, createPeerForContact) {
+  constructor(collection, mediaCollectionClass, createPeerForContact, displayInfo, wap) {
     super(collection);
 
     ChatManager.prototype.buildMediaCollection = function() {
       return new mediaCollectionClass();
     }
+
+    ChatManager.prototype.stream = displayInfo;
+
+    this.wap = wap;
 
     this.createPeerForContact = function(contactId) {
       return new createPeerForContact(contactId);
@@ -426,37 +431,5 @@ export class ChatCollectionManager extends CollectionManager {
     let chats = chatIds.map((id) => this.loadItem(id));
 
     return await this.collection.forwardMessagesToChats(messages, chats);
-  }
-
-  @command
-  async getChatId({
-    number
-  }) {
-    function eightDigitsPhone(number) {
-      return number.length < 13 ? number : number.substr(0, 4) + number.substr(5, 8)
-    }
-
-    function nineDigitsPhone(number) {
-        return number.length <= 12 ? number.substr(0, 4) + '9' + number.substr(4, 8) : number
-    }
-
-    const phone8 = `${eightDigitsPhone(number)}@c.us`;
-    const phone9 = `${nineDigitsPhone(number)}@c.us`;
-
-    return phone8;
-
-    let data = await this.wapQuery.getCapabilities([phone8]);
-
-    if (data[phone8]) {
-      return phone8;
-    } else {
-      data = await this.wapQuery.getCapabilities([phone9]);
-
-      if (data[phone9]) {
-        return phone9;
-      } else {
-        return phone8;
-      }
-    }
   }
 }

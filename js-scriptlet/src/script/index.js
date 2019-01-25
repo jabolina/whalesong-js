@@ -1,56 +1,32 @@
-import {
-  ConnManager
-} from './conn.js';
-import {
-  StreamManager
-} from './stream.js';
-import {
-  ChatCollectionManager
-} from './chat.js';
-import {
-  MessageCollectionManager
-} from './message.js';
-import {
-  MessageInfoCollectionManager
-} from './messageInfo.js';
-import {
-  ContactCollectionManager
-} from './contact.js';
-import {
-  GroupMetadataCollectionManager
-} from './groupMetadata.js';
-import {
-  WapManager
-} from './wap.js';
-import {
-  UIControllerManager
-} from './uiController.js';
-import {
-  StorageManager
-} from './storage.js';
-import {
-  StickerPackCollectionManager
-} from './stickerPack.js';
-import {
-  PresenceCollectionManager
-} from './presence.js';
-import {
-  ProfilePicThumbCollectionManager
-} from './profilePicThumb.js';
-import {
-  StatusCollectionManager
-} from './status.js';
+import { ChatCollectionManager } from './chat.js';
+import { ConnManager } from './conn.js';
+import { ContactCollectionManager } from './contact.js';
+import { DisplayInfoManager } from './displayInfo.js';
+import { GroupMetadataCollectionManager } from './groupMetadata.js';
+import { LiveLocationCollectionManager } from './liveLocation.js';
+import { MessageCollectionManager } from './message.js';
+import { MessageInfoCollectionManager } from './messageInfo.js';
+import { MuteCollectionManager } from './mute.js';
+import { PresenceCollectionManager } from './presence.js';
+import { ProfilePicThumbCollectionManager } from './profilePicThumb.js';
+import { StatusCollectionManager } from './status.js';
+import { StickerPackCollectionManager } from './stickerPack.js';
+import { StorageManager } from './storage.js';
+import { StreamManager } from './stream.js';
+import { UIControllerManager } from './uiController.js';
+import { WapManager } from './wap.js';
 
 
 function getArtifactsDefs() {
   return {
     'conn': (module) => module.default && typeof module.default == "object" && 'ref' in module.default && 'refTTL' in module.default ? module.default : null,
     'store': (module) => module.Chat && module.Msg ? module : null,
-    'wap': (module) => module.queryExist ? module : null,
+    'wap': (module) => module.queryExist ? module : module.default && module.default.queryExist ? module.default : null,
     'stream': (module) => module.default && typeof module.default == "object" && 'stream' in module.default && 'socket' in module.default ? module.default : null,
     'uiController': (module) => module.default && module.default.focusNextChat ? module.default : null,
     'mediaCollectionClass': (module) => (module.prototype && module.prototype.processFiles !== undefined) || (module.default && module.default.prototype && module.default.prototype.processFiles !== undefined) ? module.default ? module.default : module : null,
-    'createPeerForContact': (module) => (module.default && module.default.prototype && module.default.prototype.isServer && module.default.prototype.isUser) ? module.default : null,
+    'createPeerForContact': (module) => module.default && module.default.prototype && module.default.prototype.isServer && module.default.prototype.isUser ? module.default : null,
+    'displayInfo': (module) => module.default && module.default.markAvailable && module.default.unobscure ? module.default : null,
   }
 }
 
@@ -65,12 +41,13 @@ function getRequirementsDefs() {
       }
     },
     'chatManager': {
-      'requirements': ['store', 'mediaCollectionClass', 'createPeerForContact'],
+      'requirements': ['store', 'mediaCollectionClass', 'createPeerForContact', 'displayInfo'],
       'build': function(mainManager, artifacts) {
         let manager = new ChatCollectionManager(
           artifacts['store'].Chat,
           artifacts['mediaCollectionClass'],
           artifacts['createPeerForContact'],
+          artifacts['displayInfo'],
         );
         mainManager.addSubmanager('chats', manager);
         return manager;
@@ -182,18 +159,44 @@ function getRequirementsDefs() {
         mainManager.addSubmanager('status', manager);
         return manager;
       }
-    }
-  };
+    },
+    'displayInfoManager': {
+      'requirements': ['displayInfo'],
+      'build': function(mainManager, artifacts) {
+        let manager = new DisplayInfoManager(
+          artifacts['displayInfo']
+        );
+        mainManager.addSubmanager('displayInfo', manager);
+        return manager;
+      }
+    },
+    'liveLocationManager': {
+      'requirements': ['store'],
+      'build': function(mainManager, artifacts) {
+        let manager = new LiveLocationCollectionManager(artifacts['store'].LiveLocation);
+        mainManager.addSubmanager('liveLocations', manager);
+        return manager;
+      }
+    },
+    'muteManager': {
+      'requirements': ['store'],
+      'build': function(mainManager, artifacts) {
+        let manager = new MuteCollectionManager(artifacts['store'].Mute);
+        mainManager.addSubmanager('mutes', manager);
+        return manager;
+      }
+    },
+  }
 }
 
 export default function createManagers(mainManager) {
   function discoveryModules(modules) {
-    var artifactsDefs = getArtifactsDefs();
-    var requirementsDefs = getRequirementsDefs();
+    const artifactsDefs = getArtifactsDefs();
+    const requirementsDefs = getRequirementsDefs();
 
-    var artifacts = {}
+    const artifacts = {};
 
-    function checkRequiements() {
+    function checkRequirements() {
       let recheck = true;
 
       while (recheck) {
@@ -206,7 +209,7 @@ export default function createManagers(mainManager) {
             if (!(item in artifacts)) {
               canBuild = false;
             }
-          })
+          });
 
           if (canBuild) {
             artifacts[reqIdx] = req.build(mainManager, artifacts);
@@ -242,7 +245,7 @@ export default function createManagers(mainManager) {
             }
 
             if (checkArtifacts(module)) {
-              checkRequiements();
+              checkRequirements();
             }
 
             if ((artifactsDefs.length == 0) || (requirementsDefs.length == 0)) {
@@ -257,6 +260,4 @@ export default function createManagers(mainManager) {
   webpackJsonp([], {
     'whalesong': (x, y, z) => discoveryModules(z)
   }, 'whalesong');
-
-  webpackJsonp([], {"djddhaidag": (x, y, z) => window.Stream = z('"djddhaidag"')['default']}, "djddhaidag");
 }

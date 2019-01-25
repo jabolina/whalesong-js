@@ -1,16 +1,7 @@
-import {
-  ModelManager,
-  CollectionManager
-} from './common.js';
-import {
-  command
-} from '../manager.js';
-import {
-  ValueError
-} from '../errors.js';
-import {
-  ModelNotFound
-} from './errors.js';
+import { ValueError } from '../errors.js';
+import { command } from '../manager.js';
+import { CollectionManager, ModelManager } from './common.js';
+import { ModelNotFound } from './errors.js';
 
 
 export class StickerManager extends ModelManager {
