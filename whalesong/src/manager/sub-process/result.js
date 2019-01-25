@@ -64,7 +64,6 @@ process.on("message", (envelope) => {
     const { messageType, params } = envelope;
 
     if (MESSAGE_TYPES.CREATE === messageType) {
-        console.log(envelope);
         resultClass = Object.assign(new PartialResultSubProcess(), params);
     } else if (MESSAGE_TYPES.METHOD === messageType) {
         resultClass[params.method](params.content);
