@@ -21,12 +21,17 @@ class PartialResultSubProcess extends BasePartialResult {
         }
     }
 
+    static gracefullyExit() {
+        process.disconnect();
+        process.removeAllListeners("message");
+        process.exit(0);
+    }
+
     async getResult() {
         if (!this.writeLock) {
             for await (const { value, done } of this.getResultGenerator()) {
                 if (done) {
-                    process.removeAllListeners();
-                    process.exit(0);
+                    PartialResultSubProcess.gracefullyExit();
                     break;
                 }
 
@@ -59,6 +64,7 @@ process.on("message", (envelope) => {
     const { messageType, params } = envelope;
 
     if (MESSAGE_TYPES.CREATE === messageType) {
+        console.log(envelope);
         resultClass = Object.assign(new PartialResultSubProcess(), params);
     } else if (MESSAGE_TYPES.METHOD === messageType) {
         resultClass[params.method](params.content);

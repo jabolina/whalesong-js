@@ -5,6 +5,7 @@ import StreamManager from "./manager/stream";
 import { ChatCollectionManager } from "./manager/chat";
 import { MessageCollectionManager } from "./manager/message";
 import StorageManager from "./manager/storage";
+import WapManager from "./manager/wap";
 
 
 // eslint-disable-next-line
@@ -17,6 +18,7 @@ export class WhatsApp extends BaseManager {
         this.subManagers.set("chats", new ChatCollectionManager(this.getDriver(), "chats"));
         this.subManagers.set("messages", new MessageCollectionManager(this.getDriver(), "messages"));
         this.subManagers.set("storage", new StorageManager(this.getDriver(), "storage"));
+        this.subManagers.set("wap", new WapManager(this.getDriver(), "wap"));
     }
 
     async build() {

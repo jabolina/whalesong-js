@@ -162,7 +162,7 @@ export class MonitorResult extends BasePartialResult {
     cancel() {
         super.cancel();
         if (this.worker) {
-            this.worker.disconnect();
+            this.worker.kill();
         }
     }
 }

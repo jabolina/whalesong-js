@@ -5,9 +5,14 @@ export class BaseError {
     }
 }
 
-export class ExecuteCommand extends BaseError {};
+export class ExecuteCommand extends BaseError {}
 
-export class StopIterator extends BaseError {}
+export class StopIterator extends BaseError {
+    // eslint-disable-next-line class-methods-use-this
+    close(worker) {
+        worker.close();
+    }
+}
 
 export class DecryptionError extends BaseError {}
 
