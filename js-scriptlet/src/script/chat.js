@@ -108,7 +108,9 @@ export class ChatManager extends ModelManager {
           extraData['linkPreview'] = await manager.getSubmanager('wap').queryLinkPreview({
             text
           });
-        } catch (err) {}
+        } catch (err) {
+          console.error("Sending without preview");
+        }
       }
     }
 
