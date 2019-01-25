@@ -104,9 +104,11 @@ export class ChatManager extends ModelManager {
       if (linkDesc) {
         extraData['linkPreview'] = linkDesc;
       } else {
-        extraData['linkPreview'] = await manager.getSubmanager('wap').queryLinkPreview({
-          text
-        });
+        try {
+          extraData['linkPreview'] = await manager.getSubmanager('wap').queryLinkPreview({
+            text
+          });
+        } catch (err) {}
       }
     }
 
