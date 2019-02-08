@@ -20,9 +20,9 @@ class MessageInfoManager extends BaseModelManager {
     constructor(driver, name) {
         super(driver, name);
 
-        this.addSubManager("delivery", new MessageAckManager(driver, name), "delivery");
-        this.addSubManager("read", new MessageAckManager(driver, name), "read");
-        this.addSubManager("played", new MessageAckManager(driver, name), "played");
+        this.addSubManager("delivery", MessageAckManager, "delivery");
+        this.addSubManager("read", MessageAckManager, "read");
+        this.addSubManager("played", MessageAckManager, "played");
     }
 }
 
@@ -30,7 +30,7 @@ export class MessageManager extends BaseModelManager {
     constructor(driver, name) {
         super(driver, name);
 
-        this.subManagers.set("info", new MessageInfoManager(driver, name));
+        this.subManagers.set("info", MessageInfoManager);
     }
 
     async downloadMedia(model) {
@@ -52,7 +52,7 @@ export class MessageManager extends BaseModelManager {
 
 export class MessageCollectionManager extends BaseCollectionManager {
     constructor(driver, name) {
-        super(driver, name, new MessageManager(driver, name));
+        super(driver, name, MessageManager);
     }
 
     monitorNew() {

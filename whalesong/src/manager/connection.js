@@ -1,7 +1,5 @@
 import { BaseModelManager } from "./index";
 
-class ConnManager extends BaseModelManager {
-    // no empty blocks
-}
+class ConnManager extends BaseModelManager {}
 
 export default ConnManager;

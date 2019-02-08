@@ -4,7 +4,7 @@ class Wap extends BaseManager {}
 
 class WapManager extends BaseModelManager {
     constructor(driver, name) {
-        super(driver, name, new Wap(driver, name));
+        super(driver, name, Wap);
     }
 
     getCapabilities(contactId) {

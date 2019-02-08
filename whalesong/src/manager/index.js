@@ -4,7 +4,10 @@ export class BaseManager {
     constructor(driver = null, baseName = "", managingObject = {}) {
         this.driver = driver;
         this.baseName = baseName;
-        this.manageObject = managingObject;
+        this.manageObject = managingObject.constructor === Object
+            ? managingObject
+            // eslint-disable-next-line
+            : new managingObject(driver, baseName);
         this.subManagers = new Map();
     }
 

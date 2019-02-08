@@ -4,7 +4,7 @@ class Chat extends BaseManager {}
 
 export class ChatManager extends BaseModelManager {
     constructor(driver, name) {
-        super(driver, name, new Chat(driver, name));
+        super(driver, name, Chat);
     }
 
     sendText(text, quotedMsgId = "", mentions = "", linkDesc = "") {
@@ -42,7 +42,7 @@ export class ChatManager extends BaseModelManager {
 
 export class ChatCollectionManager extends BaseCollectionManager {
     constructor(driver, name) {
-        super(driver, name, new ChatManager(driver, name));
+        super(driver, name, ChatManager);
     }
 
     getActive() {

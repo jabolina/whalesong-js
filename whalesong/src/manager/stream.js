@@ -4,7 +4,7 @@ class Stream extends BaseManager {}
 
 class StreamManager extends BaseModelManager {
     constructor(driver, name) {
-        super(driver, name, new Stream(driver, name));
+        super(driver, name, Stream);
     }
 
     poke() {
